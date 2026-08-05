@@ -190,6 +190,40 @@ section h3 {
   justify-content: center;
 }
 
+.share-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.share-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.share-button {
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: 14px;
+  font-size: 0.75rem;
+}
+
+.share-button:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-text);
+}
+
+.copy-feedback {
+  font-size: 0.75rem;
+  color: var(--success);
+  font-weight: 600;
+}
+
 /* Activity Tag */
 .activity-tag {
   position: absolute;
