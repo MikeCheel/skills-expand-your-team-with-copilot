@@ -552,6 +552,13 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("")}
         </ul>
       </div>
+      <div class="share-actions" data-activity="${name}">
+        <div class="share-label">Share:</div>
+        <button class="share-button" data-platform="facebook" data-activity="${name}" type="button">Facebook</button>
+        <button class="share-button" data-platform="x" data-activity="${name}" type="button">X</button>
+        <button class="share-button copy-link-button" data-platform="copy" data-activity="${name}" type="button">Copy Link</button>
+        <span class="copy-feedback hidden" aria-live="polite">Link copied!</span>
+      </div>
       <div class="activity-card-actions">
         ${
           currentUser
@@ -577,6 +584,11 @@ document.addEventListener("DOMContentLoaded", () => {
       button.addEventListener("click", handleUnregister);
     });
 
+    const shareButtons = activityCard.querySelectorAll(".share-button");
+    shareButtons.forEach((button) => {
+      button.addEventListener("click", handleShareClick);
+    });
+
     // Add click handler for register button (only when authenticated)
     if (currentUser) {
       const registerButton = activityCard.querySelector(".register-button");
@@ -588,6 +600,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     activitiesList.appendChild(activityCard);
+  }
+
+
+
+  function getActivityShareUrl(activityName) {
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    return `${baseUrl}#activity=${encodeURIComponent(activityName)}`;
+  }
+
+  function handleShareClick(event) {
+    const button = event.currentTarget;
+    const activityName = button.dataset.activity;
+    const platform = button.dataset.platform;
+    const shareUrl = getActivityShareUrl(activityName);
+    const encodedText = encodeURIComponent(`Check out this activity: ${activityName}`);
+    const encodedUrl = encodeURIComponent(shareUrl);
+
+    if (platform === "facebook") {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    if (platform === "x") {
+      window.open(`https://x.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    if (platform === "copy") {
+      navigator.clipboard
+        .writeText(shareUrl)
+        .then(() => {
+          const shareContainer = button.closest(".share-actions");
+          const feedback = shareContainer?.querySelector(".copy-feedback");
+          if (!feedback) return;
+
+          feedback.classList.remove("hidden");
+          setTimeout(() => {
+            feedback.classList.add("hidden");
+          }, 1500);
+        })
+        .catch(() => {
+          showMessage("Couldn't copy link. Please try again.", "error");
+        });
+    }
   }
 
   // Event listeners for search and filter
